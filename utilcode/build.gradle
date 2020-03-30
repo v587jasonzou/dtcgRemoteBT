@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+}
+
+dependencies {
+    api rootProject.ext.dependencies["gson"]
+
+    compileOnly rootProject.ext.dependencies["appcompat-v7"]
+    compileOnly rootProject.ext.dependencies["design"]
+
+//    testImplementation dep.junit
+//    testImplementation dep.robolectric
+//    testImplementation dep.support.appcompat_v7
+}

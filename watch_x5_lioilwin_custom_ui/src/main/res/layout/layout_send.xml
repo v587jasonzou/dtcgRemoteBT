@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_btclient">
+
+    <EditText
+        android:id="@+id/input_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入短消息" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="sendMsg"
+        android:text="sendMsg" />
+
+    <EditText
+        android:id="@+id/input_file"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入文件路径(例如:/sdcard/1.txt)"
+        android:text="/sdcard/demo.txt" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="sendFile"
+        android:text="sendFile" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/llClient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnAudioPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnAudioPlay"
+                    android:text="播放音频" />
+
+                <ImageView
+                    android:onClick="ivSmallImgPrew"
+                    android:id="@+id/ivImgPreview"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnStopAudioRecording"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="btnStopAudioRecording"
+                android:text="结束录音" />
+
+            <TextView
+                android:id="@+id/tv_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOG:"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+    </ScrollView>
+</merge>
