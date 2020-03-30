@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth;
+package com.yunda.smartglasses;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

@@ -124,7 +124,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
         try {
             camera = Camera.open(id);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return camera;
     }
@@ -199,8 +199,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 
+        //NOTE:尺寸的设置影响预览成像效果(模糊)
         //这里第三个参数为最小尺寸 getPropPreviewSize方法会对从最小尺寸开始升序排列 取出所有支持尺寸的最小尺寸
-        Camera.Size previewSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPreviewSizes(), 800);
+//        Camera.Size previewSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPreviewSizes(), 800);
+        Camera.Size previewSize = CameraHelper.getOptimalVideoSize(parameters.getSupportedVideoSizes(),
+                parameters.getSupportedPreviewSizes(), surfaceView.getHeight(), surfaceView.getWidth());
         parameters.setPreviewSize(previewSize.width, previewSize.height);
 
         Camera.Size pictrueSize = CameraUtil.getInstance().getPropSizeForHeight(parameters.getSupportedPictureSizes(), 800);

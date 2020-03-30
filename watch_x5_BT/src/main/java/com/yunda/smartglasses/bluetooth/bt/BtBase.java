@@ -6,7 +6,7 @@ import android.os.Environment;
 import android.support.annotation.IntRange;
 
 import com.blankj.utilcode.util.RegexUtils;
-import com.yunda.smartglasses.bluetooth.APP;
+import com.yunda.smartglasses.APP;
 import com.yunda.smartglasses.bluetooth.util.Util;
 
 import java.io.DataInputStream;

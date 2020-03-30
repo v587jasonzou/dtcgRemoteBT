@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -12,15 +11,12 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.ibbhub.mp3recorderlib.IAudioRecorder;
-import com.madgaze.smartglass.dialog.AlertDialog;
-import com.madgaze.smartglass.hardware.KeyCodeHelper;
+import com.yunda.smartglasses.APP;
 import com.yunda.smartglasses.R;
-import com.yunda.smartglasses.bluetooth.APP;
 import com.yunda.smartglasses.bluetooth.util.Util;
 import com.yunda.smartglasses.camera.AppConstant;
 import com.yunda.smartglasses.camera.CameraUtil;
@@ -230,29 +226,31 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event){
-//        if (event.getKeyCode()== KeyEvent.KEYCODE_BACK) {
-//            if (isAudioRecording) {
-//                Util.stopAudioRecord(mRecorder);
-//                mLogs.append("\n录音结束,录音文件地址:" + audioFilePath);
-//                sendFile(audioFilePath);
-//                isAudioRecording = false;
-//                return true;
-//            }
-//        }
-//        return super.dispatchKeyEvent(event);
-
-        switch (KeyCodeHelper.CheckKeyType(event.getKeyCode(), event)) {
-            case CONFIRM:
-                // Equivalent to Button A clicked.
-                toStopAudioRecording();
+        //标准设备
+        if (event.getKeyCode()== KeyEvent.KEYCODE_BACK) {
+            if (isAudioRecording) {
+                Util.stopAudioRecord(mRecorder);
+                mLogs.append("\n录音结束,录音文件地址:" + audioFilePath);
+                sendFile(audioFilePath);
+                isAudioRecording = false;
                 return true;
-            default:
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                    toStopAudioRecording();
-                    return true;
-                } else
-                    return super.dispatchKeyEvent(event);
+            }
         }
+        return super.dispatchKeyEvent(event);
+
+//        //X5眼镜
+//        switch (KeyCodeHelper.CheckKeyType(event.getKeyCode(), event)) {
+//            case CONFIRM:
+//                // Equivalent to Button A clicked.
+//                toStopAudioRecording();
+//                return true;
+//            default:
+//                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+//                    toStopAudioRecording();
+//                    return true;
+//                } else
+//                    return super.dispatchKeyEvent(event);
+//        }
     }
 
     private void toStopAudioRecording() {

@@ -21,7 +21,7 @@
         android:required="false" />
 
     <application
-        android:name="com.yunda.smartglasses.bluetooth.APP"
+        android:name="com.yunda.smartglasses.APP"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,7 +30,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="com.yunda.smartglasses.bluetooth.MainActivity">
+        <activity android:name="com.yunda.smartglasses.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

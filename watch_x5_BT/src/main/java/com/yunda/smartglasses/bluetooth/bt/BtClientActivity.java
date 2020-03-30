@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.yunda.smartglasses.R;
 import com.yunda.smartglasses.audio.AudioPlayer;
-import com.yunda.smartglasses.bluetooth.APP;
+import com.yunda.smartglasses.APP;
 import com.yunda.smartglasses.bluetooth.util.BtReceiver;
 
 import java.io.File;

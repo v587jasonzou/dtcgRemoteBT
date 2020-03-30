@@ -15,18 +15,18 @@ android {
         testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
     }
 
-    //X5 - 手持机
-    flavorDimensions "side"
-    productFlavors{
-        server{
-            dimension "side"
-            applicationIdSuffix 'server'
-        }
-        client{
-            dimension "side"
-            applicationIdSuffix 'client'
-        }
-    }
+//    //X5 - 手持机
+//    flavorDimensions "side"
+//    productFlavors{
+//        server{
+//            dimension "side"
+//            applicationIdSuffix 'server'
+//        }
+//        client{
+//            dimension "side"
+//            applicationIdSuffix 'client'
+//        }
+//    }
 }
 
 dependencies {

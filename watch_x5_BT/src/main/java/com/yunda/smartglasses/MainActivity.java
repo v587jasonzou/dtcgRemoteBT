@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth;
+package com.yunda.smartglasses;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -8,8 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
+import com.blankj.utilcode.util.DeviceUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.yunda.smartglasses.BuildConfig;
 import com.yunda.smartglasses.bluetooth.bt.BtClientActivity;
 import com.yunda.smartglasses.bluetooth.bt.BtServerActivity;
 
@@ -45,12 +46,18 @@ public class MainActivity extends FragmentActivity {
 
         // Android 6.0动态请求权限
         RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
                      .subscribe(granted -> {
                          if (granted) {
-                             if ("server".equals(BuildConfig.FLAVOR)) {
+                             boolean isServer;
+//                             isServer = true;
+//                             boolean isServer = "server".equals(BuildConfig.FLAVOR);
+                             isServer = "i6310C".equals(DeviceUtils.getModel());
+                             if (isServer) {
+                                 ToastUtils.showShort("启动BlueTooth-服务端");
                                  btServer(null);
                              } else {
+                                 ToastUtils.showShort("启动BlueTooth-客户端");
                                  btClient(null);
                              }
                              finish();
