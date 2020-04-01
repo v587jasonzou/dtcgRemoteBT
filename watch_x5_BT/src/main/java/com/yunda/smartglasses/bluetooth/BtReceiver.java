@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth.util;
+package com.yunda.smartglasses.bluetooth;
 
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;

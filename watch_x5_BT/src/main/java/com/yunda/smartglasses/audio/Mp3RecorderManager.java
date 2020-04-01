@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth.util;
+package com.yunda.smartglasses.audio;
 
 import android.util.Log;
 
@@ -8,12 +8,9 @@ import com.ibbhub.mp3recorderlib.listener.AudioRecordListener;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
-public class Util {
-    public static final Executor EXECUTOR = Executors.newCachedThreadPool();
-    private static final String TAG = Util.class.getSimpleName();
+public class Mp3RecorderManager {
+    private static final String TAG = Mp3RecorderManager.class.getSimpleName();
 
     public static void mkdirs(String filePath) {
         boolean mk = new File(filePath).mkdirs();

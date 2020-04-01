@@ -453,7 +453,7 @@ public class BitmapUtils {
                 out.flush();
                 out.close();
             }
-            updateResources(context, file.getPath());
+            addRescToLiberary(context, file.getPath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -476,7 +476,7 @@ public class BitmapUtils {
                 out.flush();
                 out.close();
             }
-            updateResources(context, file.getPath());
+            addRescToLiberary(context, file.getPath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -499,7 +499,7 @@ public class BitmapUtils {
                 out.flush();
                 out.close();
             }
-            updateResources(context, file.getPath());
+            addRescToLiberary(context, file.getPath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -775,7 +775,13 @@ public class BitmapUtils {
         return bitmap;
     }
 
-    public static void updateResources(Context context, String path) {
+    /**
+     * 将资源添加到库中，通过图库可以查看
+     *
+     * @param context
+     * @param path
+     */
+    public static void addRescToLiberary(Context context, String path) {
         MediaScannerConnection.scanFile(context, new String[]{path}, null, null);
     }
 

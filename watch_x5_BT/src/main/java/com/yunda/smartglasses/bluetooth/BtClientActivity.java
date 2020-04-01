@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth.bt;
+package com.yunda.smartglasses.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.yunda.smartglasses.R;
 import com.yunda.smartglasses.audio.AudioPlayer;
 import com.yunda.smartglasses.APP;
-import com.yunda.smartglasses.bluetooth.util.BtReceiver;
 
 import java.io.File;
 

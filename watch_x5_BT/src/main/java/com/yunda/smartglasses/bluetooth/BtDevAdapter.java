@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth.bt;
+package com.yunda.smartglasses.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -27,6 +27,9 @@ public class BtDevAdapter extends RecyclerView.Adapter<BtDevAdapter.VH> {
         addBound();
     }
 
+    /**
+     * 获取已经绑定(配对)的蓝牙设备
+     */
     private void addBound() {
         Set<BluetoothDevice> bondedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
         if (bondedDevices != null)

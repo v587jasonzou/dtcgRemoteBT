@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth.bt;
+package com.yunda.smartglasses.bluetooth;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -17,9 +17,9 @@ import com.blankj.utilcode.util.FileUtils;
 import com.ibbhub.mp3recorderlib.IAudioRecorder;
 import com.yunda.smartglasses.APP;
 import com.yunda.smartglasses.R;
-import com.yunda.smartglasses.bluetooth.util.Util;
+import com.yunda.smartglasses.audio.Mp3RecorderManager;
 import com.yunda.smartglasses.camera.AppConstant;
-import com.yunda.smartglasses.camera.CameraUtil;
+import com.yunda.smartglasses.camera.CameraHelper;
 
 import java.io.File;
 
@@ -33,7 +33,7 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
     private BtServer mServer;
 
     //录音
-    private IAudioRecorder mRecorder=Util.initMp3Recorder();
+    private IAudioRecorder mRecorder= Mp3RecorderManager.initMp3Recorder();
     private boolean isAudioRecording=false;
     private String audioFilePath;
 
@@ -66,8 +66,6 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
             }
         } else if (REQ_CODE_TAKE_PHOTO == requestCode && resultCode == Activity.RESULT_OK) {
             String img_path = data.getStringExtra(AppConstant.KEY.IMG_PATH);
-            int picWidth = data.getIntExtra(AppConstant.KEY.PIC_WIDTH, 0);
-            int picHeight = data.getIntExtra(AppConstant.KEY.PIC_HEIGHT, 0);
             sendFile(img_path);
         }
     }
@@ -141,7 +139,7 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
             case BtBase.Listener.ORDER_PHOTO:
                 msg = String.format("\n%s", "请求当前设备进行拍照");
                 mLogs.append(msg);
-                CameraUtil.getInstance().camera(BtServerActivity.this,REQ_CODE_TAKE_PHOTO);
+                CameraHelper.camera(BtServerActivity.this,REQ_CODE_TAKE_PHOTO);
 
 //                new AlertDialog.Builder(this)
 //                        .setTitle("请求拍照")
@@ -220,7 +218,7 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
         mLogs.append("\n录音正在录音(点击确定键结束)...");
         FileUtils.createOrExistsDir(BtServer.FILE_PATH);
         audioFilePath = BtServer.FILE_PATH + System.currentTimeMillis() + ".mp3";
-        Util.startAudioRecord(mRecorder, audioFilePath);
+        Mp3RecorderManager.startAudioRecord(mRecorder, audioFilePath);
         isAudioRecording = true;
     }
 
@@ -229,7 +227,7 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
         //标准设备
         if (event.getKeyCode()== KeyEvent.KEYCODE_BACK) {
             if (isAudioRecording) {
-                Util.stopAudioRecord(mRecorder);
+                Mp3RecorderManager.stopAudioRecord(mRecorder);
                 mLogs.append("\n录音结束,录音文件地址:" + audioFilePath);
                 sendFile(audioFilePath);
                 isAudioRecording = false;
@@ -255,7 +253,7 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
 
     private void toStopAudioRecording() {
         if (isAudioRecording) {
-            Util.stopAudioRecord(mRecorder);
+            Mp3RecorderManager.stopAudioRecord(mRecorder);
             mLogs.append("\n录音结束,录音文件地址:" + audioFilePath);
             sendFile(audioFilePath);
             isAudioRecording = false;

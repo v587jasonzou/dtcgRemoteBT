@@ -1,10 +1,10 @@
-package com.yunda.smartglasses.bluetooth.bt;
+package com.yunda.smartglasses.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
-import com.yunda.smartglasses.bluetooth.util.Util;
+import com.yunda.smartglasses.APP;
 
 /**
  * 服务端监听和连接线程，只连接一个设备
@@ -27,7 +27,7 @@ public class BtServer extends BtBase {
 //            mSSocket = adapter.listenUsingRfcommWithServiceRecord(TAG, SPP_UUID); //加密传输，Android强制执行配对，弹窗显示配对码
             mSSocket = adapter.listenUsingInsecureRfcommWithServiceRecord(TAG, SPP_UUID); //明文传输(不安全)，无需配对
             // 开启子线程
-            Util.EXECUTOR.execute(new Runnable() {
+            APP.EXECUTOR.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {

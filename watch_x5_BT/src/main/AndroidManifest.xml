@@ -20,6 +20,7 @@
         android:name="android.hardware.bluetooth_le"
         android:required="false" />
 
+<!--    android:requestLegacyExternalStorage="true"-->
     <application
         android:name="com.yunda.smartglasses.APP"
         android:fullBackupContent="false"
@@ -39,12 +40,12 @@
         </activity>
 
         <activity
-            android:name="com.yunda.smartglasses.bluetooth.bt.BtClientActivity"
+            android:name="com.yunda.smartglasses.bluetooth.BtClientActivity"
             android:label="@string/bt_client"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name="com.yunda.smartglasses.bluetooth.bt.BtServerActivity"
+            android:name="com.yunda.smartglasses.bluetooth.BtServerActivity"
             android:label="@string/bt_server"
             android:windowSoftInputMode="stateAlwaysHidden" />
 

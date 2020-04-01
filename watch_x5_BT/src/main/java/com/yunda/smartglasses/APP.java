@@ -8,9 +8,13 @@ import android.widget.Toast;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 public class APP extends Application {
     private static final Handler sHandler = new Handler();
     private static Toast sToast; // 单例Toast,避免重复创建，显示时间过长
+    public static final Executor EXECUTOR = Executors.newCachedThreadPool();
 
     @SuppressLint("ShowToast")
     @Override

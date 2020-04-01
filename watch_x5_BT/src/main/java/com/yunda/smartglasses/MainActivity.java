@@ -11,8 +11,8 @@ import android.view.View;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.yunda.smartglasses.bluetooth.bt.BtClientActivity;
-import com.yunda.smartglasses.bluetooth.bt.BtServerActivity;
+import com.yunda.smartglasses.bluetooth.BtClientActivity;
+import com.yunda.smartglasses.bluetooth.BtServerActivity;
 
 
 public class MainActivity extends FragmentActivity {

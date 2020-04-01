@@ -1,4 +1,4 @@
-package com.yunda.smartglasses.bluetooth.bt;
+package com.yunda.smartglasses.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -7,7 +7,7 @@ import android.support.annotation.IntRange;
 
 import com.blankj.utilcode.util.RegexUtils;
 import com.yunda.smartglasses.APP;
-import com.yunda.smartglasses.bluetooth.util.Util;
+import com.yunda.smartglasses.audio.Mp3RecorderManager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -21,7 +21,8 @@ import java.util.UUID;
  */
 public class BtBase {
     static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth/";
+//    public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth/";
+    public static final String FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
 
     /*数据帧 - 数据类型*/
     private static final int FLAG_MSG = 0;  //消息标记
@@ -64,7 +65,7 @@ public class BtBase {
                         notifyUI(Listener.ORDER_AUDIO, null);
                         break;
                     case FLAG_FILE: //读取文件
-                        Util.mkdirs(FILE_PATH);
+                        Mp3RecorderManager.mkdirs(FILE_PATH);
                         String fileName = in.readUTF(); //文件名
                         long fileLen = in.readLong(); //文件长度
                         // 读取文件内容
@@ -136,7 +137,7 @@ public class BtBase {
     public void sendFile(final String filePath) {
         if (checkSend()) return;
         isSending = true;
-        Util.EXECUTOR.execute(new Runnable() {
+        APP.EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 try {
