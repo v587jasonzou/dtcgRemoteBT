@@ -8,19 +8,16 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
-import com.blankj.utilcode.util.DeviceUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.yunda.smartglasses.bluetooth.BtClientActivity;
 import com.yunda.smartglasses.bluetooth.BtServerActivity;
 
 
 public class MainActivity extends FragmentActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         // 检查蓝牙开关
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
@@ -44,34 +41,50 @@ public class MainActivity extends FragmentActivity {
             return;
         }
 
+//        // Android 6.0动态请求权限
+//        RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
+//        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+//                     .subscribe(granted -> {
+//                         if (granted) {
+//                             boolean isServer=true;
+//                             isServer = "i6310C".equals(DeviceUtils.getModel());
+//                             if (isServer) {
+//                                 ToastUtils.showShort("启动BlueTooth-服务端");
+//                                 startActivity(new Intent(this, BtServerActivity.class));
+//                             } else {
+//                                 ToastUtils.showShort("启动BlueTooth-客户端");
+//                                 startActivity(new Intent(this, BtClientActivity.class));
+//                             }
+//                             finish();
+//                         } else {
+//                             APP.toast("缺少必须权限！无法正常运行", 0);
+//                         }
+//                     });
+    }
+
+    public void btClient(View view) {
         // Android 6.0动态请求权限
         RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
                      .subscribe(granted -> {
                          if (granted) {
-                             boolean isServer;
-//                             isServer = true;
-//                             boolean isServer = "server".equals(BuildConfig.FLAVOR);
-                             isServer = "i6310C".equals(DeviceUtils.getModel());
-                             if (isServer) {
-                                 ToastUtils.showShort("启动BlueTooth-服务端");
-                                 btServer(null);
-                             } else {
-                                 ToastUtils.showShort("启动BlueTooth-客户端");
-                                 btClient(null);
-                             }
-                             finish();
+                             startActivity(new Intent(this, BtClientActivity.class));
                          } else {
                              APP.toast("缺少必须权限！无法正常运行", 0);
                          }
                      });
     }
 
-    public void btClient(View view) {
-        startActivity(new Intent(this, BtClientActivity.class));
-    }
-
     public void btServer(View view) {
-        startActivity(new Intent(this, BtServerActivity.class));
+        // Android 6.0动态请求权限
+        RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+                     .subscribe(granted -> {
+                         if (granted) {
+                             startActivity(new Intent(this, BtServerActivity.class));
+                         } else {
+                             APP.toast("缺少必须权限！无法正常运行", 0);
+                         }
+                     });
     }
 }

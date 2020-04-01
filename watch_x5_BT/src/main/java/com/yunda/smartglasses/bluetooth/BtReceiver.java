@@ -11,7 +11,7 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 /**
- * 监听蓝牙广播-各种状态
+ * 蓝牙广播-监听各种蓝牙状态
  */
 public class BtReceiver extends BroadcastReceiver {
     private static final String TAG = BtReceiver.class.getSimpleName();
@@ -46,16 +46,16 @@ public class BtReceiver extends BroadcastReceiver {
         if (dev != null)
             Log.i(TAG, "BluetoothDevice: " + dev.getName() + ", " + dev.getAddress());
         switch (action) {
-            case BluetoothAdapter.ACTION_STATE_CHANGED:
+            case BluetoothAdapter.ACTION_STATE_CHANGED://蓝牙开关状态
                 int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                 Log.i(TAG, "STATE: " + state);
                 break;
-            case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+            case BluetoothAdapter.ACTION_DISCOVERY_STARTED://蓝牙开始搜索
                 break;
-            case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+            case BluetoothAdapter.ACTION_DISCOVERY_FINISHED://蓝牙搜索结束
                 break;
 
-            case BluetoothDevice.ACTION_FOUND:
+            case BluetoothDevice.ACTION_FOUND://蓝牙发现新设备(未配对的设备)
                 short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MAX_VALUE);
                 Log.i(TAG, "EXTRA_RSSI:" + rssi);
                 mListener.foundDev(dev);
@@ -68,27 +68,30 @@ public class BtReceiver extends BroadcastReceiver {
                     e.printStackTrace();
                 }*/
                 break;
-            case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
+            case BluetoothDevice.ACTION_BOND_STATE_CHANGED://设备配对状态改变
                 Log.i(TAG, "BOND_STATE: " + intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, 0));
                 break;
-            case BluetoothDevice.ACTION_ACL_CONNECTED:
+            case BluetoothDevice.ACTION_ACL_CONNECTED://最底层连接建立
                 break;
-            case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+            case BluetoothDevice.ACTION_ACL_DISCONNECTED://最底层连接断开
                 break;
 
-            case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED:
+            case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED://BluetoothAdapter连接状态
                 Log.i(TAG, "CONN_STATE: " + intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0));
                 break;
-            case BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED:
+            case BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED://BluetoothHeadset连接状态
                 Log.i(TAG, "CONN_STATE: " + intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, 0));
                 break;
-            case BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED:
+            case BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED://BluetoothA2dp连接状态
                 Log.i(TAG, "CONN_STATE: " + intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, 0));
                 break;
         }
     }
 
     public interface Listener {
+        /**发现设备
+         * @param dev
+         */
         void foundDev(BluetoothDevice dev);
     }
 }
