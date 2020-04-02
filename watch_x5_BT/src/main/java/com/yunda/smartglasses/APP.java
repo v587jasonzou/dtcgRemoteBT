@@ -5,8 +5,8 @@ import android.app.Application;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.lzy.imagepicker.ImagePicker;
-import com.lzy.imagepicker.loader.GlideImageLoader;
+//import com.lzy.imagepicker.ImagePicker;
+//import com.lzy.imagepicker.loader.GlideImageLoader;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -22,8 +22,8 @@ public class APP extends Application {
         super.onCreate();
         sToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new GlideImageLoader());   //设置图片加载器
+//        ImagePicker imagePicker = ImagePicker.getInstance();
+//        imagePicker.setImageLoader(new GlideImageLoader());   //设置图片加载器
     }
 
     public static void toast(String txt, int duration) {

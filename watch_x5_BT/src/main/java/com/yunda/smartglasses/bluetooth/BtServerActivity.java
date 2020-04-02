@@ -18,6 +18,8 @@ import com.ibbhub.mp3recorderlib.IAudioRecorder;
 import com.yunda.smartglasses.APP;
 import com.yunda.smartglasses.R;
 import com.yunda.smartglasses.audio.Mp3RecorderManager;
+import com.yunda.smartglasses.camcorder.CamcorderActivity;
+import com.yunda.smartglasses.camcorder.CamcorderHelper;
 import com.yunda.smartglasses.camera.AppConstant;
 import com.yunda.smartglasses.camera.CameraHelper;
 
@@ -25,7 +27,8 @@ import java.io.File;
 
 public class BtServerActivity extends FragmentActivity implements BtBase.Listener {
     private static final int REQ_CODE_DISCOVERABLE = 1;
-    private static final int REQ_CODE_TAKE_PHOTO = 2;
+    private static final int REQ_CODE_TAKE_PHOTO = 2;//拍照
+    private static final int REQ_CODE_TAKE_VIDEO = 3;//请求录像
     private TextView mTips;
     private EditText mInputMsg;
     private EditText mInputFile;
@@ -59,14 +62,25 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (REQ_CODE_DISCOVERABLE==requestCode) {
-            if (resultCode== Activity.RESULT_CANCELED) {
-                APP.toast("无法被手持机检测到，请准许程序的请求",0);
-                finish();
-            }
-        } else if (REQ_CODE_TAKE_PHOTO == requestCode && resultCode == Activity.RESULT_OK) {
-            String img_path = data.getStringExtra(AppConstant.KEY.IMG_PATH);
-            sendFile(img_path);
+        switch (requestCode) {
+            case REQ_CODE_DISCOVERABLE:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    APP.toast("无法被手持机检测到，请准许程序的请求", 0);
+                    finish();
+                }
+                break;
+            case REQ_CODE_TAKE_PHOTO:
+                if (resultCode == Activity.RESULT_OK) {
+                    String img_path = data.getStringExtra(AppConstant.KEY.IMG_PATH);
+                    sendFile(img_path);
+                }
+                break;
+            case REQ_CODE_TAKE_VIDEO:
+                if (resultCode == Activity.RESULT_OK) {
+                    String videoPath = data.getStringExtra(CamcorderActivity.BUNDLE_VIDEO_PATH);
+                    sendFile(videoPath);
+                }
+                break;
         }
     }
 
@@ -137,77 +151,19 @@ public class BtServerActivity extends FragmentActivity implements BtBase.Listene
                 mLogs.append(msg);
                 break;
             case BtBase.Listener.ORDER_PHOTO:
-                msg = String.format("\n%s", "请求当前设备进行拍照");
+                msg = String.format("\n%s", "开始拍照");
                 mLogs.append(msg);
                 CameraHelper.camera(BtServerActivity.this,REQ_CODE_TAKE_PHOTO);
-
-//                new AlertDialog.Builder(this)
-//                        .setTitle("请求拍照")
-//                        .setDescription("手持机请求拍照")
-//                        .setPositiveButton("拍照", new AlertDialog.OnClickListener() {
-//                            @Override
-//                            public void onClick(AlertDialog d) {
-//                                d.dismiss();
-//
-//                                //允许拍照
-//                                try {
-////                                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-////                                    startActivityForResult(takePictureIntent, 1);
-//
-////                                    //直接拍照，添加到上传队列
-////                                    TakePhotoFragment takePhotoFragment = new TakePhotoFragment();
-////                                    takePhotoFragment.setTakePhotoListener(new TakePhotoFragment.ItemTakePhotoListener() {
-////                                        @Override
-////                                        public void onPhotosGetted(ArrayList<ImageItem> photos) {
-////                                            String filePath = photos.get(0).path;
-////                                            sendFile(filePath);
-////                                        }
-////                                    });
-////                                    takePhotoFragment.show(getSupportFragmentManager(), "");
-//
-//                                    CameraUtil.getInstance().camera(BtServerActivity.this,REQ_CODE_TAKE_PHOTO);
-//
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        })
-//                        .setNegativeButton("拒绝", new AlertDialog.OnClickListener() {
-//                            @Override
-//                            public void onClick(AlertDialog d) {
-//                                d.dismiss();
-//                            }
-//                        })
-//                        .show();
                 break;
             case BtBase.Listener.ORDER_AUDIO:
-                msg = String.format("\n%s", "请求当前设备进行录音");
+                msg = String.format("\n%s", "开始录音");
                 mLogs.append(msg);
                 startAudioRec();
-
-//                new AlertDialog.Builder(this)
-//                        .setTitle("录音")
-//                        .setDescription("手持机请求录音")
-//                        .setPositiveButton("录音", new AlertDialog.OnClickListener() {
-//                            @Override
-//                            public void onClick(AlertDialog d) {
-//                                d.dismiss();
-//
-//                                //允许录音
-//                                mLogs.append("\n录音正在录音(点击确定键结束)...");
-//                                FileUtils.createOrExistsDir(BtServer.FILE_PATH);
-//                                audioFilePath=BtServer.FILE_PATH + System.currentTimeMillis() + ".mp3";
-//                                Util.startAudioRecord(mRecorder, audioFilePath);
-//                                isAudioRecording=true;
-//                            }
-//                        })
-//                        .setNegativeButton("拒绝", new AlertDialog.OnClickListener() {
-//                            @Override
-//                            public void onClick(AlertDialog d) {
-//                                d.dismiss();
-//                            }
-//                        })
-//                        .show();
+                break;
+            case BtBase.Listener.ORDER_VIDEO:
+                msg = String.format("\n%s", "开始录像");
+                mLogs.append(msg);
+                CamcorderHelper.video(BtServerActivity.this,REQ_CODE_TAKE_VIDEO);
                 break;
         }
         APP.toast(msg, 0);

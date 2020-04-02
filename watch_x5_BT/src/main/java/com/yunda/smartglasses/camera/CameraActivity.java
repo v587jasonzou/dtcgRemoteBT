@@ -36,7 +36,7 @@ import java.util.Locale;
 public class CameraActivity extends Activity implements SurfaceHolder.Callback {
     private Camera mCamera;
     private SurfaceView surfaceView;
-    private int mCameraId = CameraHelper.getCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
+    private int mCameraId = CameraHelper.getCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
     private Context context;
 
     //屏幕宽高
@@ -128,6 +128,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
                 String imgPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath() +
                         File.separator + "IMG_" + timeStamp + ".jpg";
 
+                //照片存入文件，写入多媒体库
                 BitmapUtils.saveJPGE_After(context, saveBitmap, imgPath, 100);
 
                 if (!bitmap.isRecycled()) {

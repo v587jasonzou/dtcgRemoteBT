@@ -3,7 +3,6 @@ package com.yunda.smartglasses.bluetooth;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Environment;
-import android.support.annotation.IntRange;
 
 import com.blankj.utilcode.util.RegexUtils;
 import com.yunda.smartglasses.APP;
@@ -21,14 +20,15 @@ import java.util.UUID;
  */
 public class BtBase {
     static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-//    public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth/";
-    public static final String FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+    public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth/";
+//    public static final String FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath()+File.separator;
 
     /*数据帧 - 数据类型*/
     private static final int FLAG_MSG = 0;  //消息标记
     private static final int FLAG_FILE = 1; //文件标记
-    public static final int FLAG_ORDER_PHOTO = 2;  //指令标记
-    public static final int FLAG_ORDER_AUDIO = 3;  //指令标记
+    public static final int FLAG_ORDER_PHOTO = 2;  //拍照指令标记
+    public static final int FLAG_ORDER_AUDIO = 3;  //录音指令标记
+    public static final int FLAG_ORDER_VIDEO = 4;  //摄像指令标记
 
     private BluetoothSocket mSocket;
     private DataOutputStream mOut;
@@ -58,11 +58,14 @@ public class BtBase {
                         String msg = in.readUTF();
                         notifyUI(Listener.MSG, "接收短消息：" + msg);
                         break;
-                    case FLAG_ORDER_PHOTO: //读取短消息
+                    case FLAG_ORDER_PHOTO: //被请求拍照
                         notifyUI(Listener.ORDER_PHOTO,null);
                         break;
-                    case FLAG_ORDER_AUDIO: //读取短消息
+                    case FLAG_ORDER_AUDIO: //被请求录音
                         notifyUI(Listener.ORDER_AUDIO, null);
+                        break;
+                    case FLAG_ORDER_VIDEO: //被请求录像
+                        notifyUI(Listener.ORDER_VIDEO, null);
                         break;
                     case FLAG_FILE: //读取文件
                         Mp3RecorderManager.mkdirs(FILE_PATH);
@@ -88,6 +91,7 @@ public class BtBase {
                         }else if (RegexUtils.isImage(fileName)){
                             notifyUI(Listener.ORDER_PHOTO_RES, FILE_PATH + fileName);
                         }
+                        // TODO: 2020/4/2 视频播放组件
                         break;
                 }
             }
@@ -117,14 +121,28 @@ public class BtBase {
     /**
      * 发送短消息
      */
-    public void sendOrder(@IntRange(from = FLAG_ORDER_PHOTO,to = FLAG_ORDER_AUDIO) int order) {
-        if (order != FLAG_ORDER_PHOTO && order != FLAG_ORDER_AUDIO) return;
+    public void sendOrder(int order) {
+        if (order != FLAG_ORDER_PHOTO && order != FLAG_ORDER_AUDIO && order != FLAG_ORDER_VIDEO)
+            return;
         if (checkSend()) return;
         isSending = true;
         try {
             mOut.writeInt(order); //消息标记
             mOut.flush();
-            notifyUI(Listener.MSG, "发送指令：" + (order == FLAG_ORDER_PHOTO ? "拍照" : "录音"));
+
+            String orderStr = "未定义指令";
+            switch (order) {
+                case FLAG_ORDER_PHOTO:
+                    orderStr = "拍照";
+                    break;
+                case FLAG_ORDER_AUDIO:
+                    orderStr = "录音";
+                    break;
+                case FLAG_ORDER_VIDEO:
+                    orderStr = "录像";
+                    break;
+            }
+            notifyUI(Listener.MSG, "发送指令：" + orderStr);
         } catch (Throwable e) {
             close();
         }
@@ -174,7 +192,9 @@ public class BtBase {
     public void close() {
         try {
             isRead = false;
-            mSocket.close();
+            if (mSocket!=null) {
+                mSocket.close();
+            }
             notifyUI(Listener.DISCONNECTED, null);
         } catch (Throwable e) {
             e.printStackTrace();
@@ -200,6 +220,10 @@ public class BtBase {
         return false;
     }
 
+    /**切换到UI线程，执行接受到的指令逻辑
+     * @param state
+     * @param obj
+     */
     private void notifyUI(final int state, final Object obj) {
         APP.runUi(new Runnable() {
             @Override
@@ -217,12 +241,18 @@ public class BtBase {
     public interface Listener {
         int DISCONNECTED = 0;
         int CONNECTED = 1;
+
+        //指令类型
         int MSG = 2;
         int ORDER_PHOTO = 3;
         int ORDER_AUDIO = 4;
+        int ORDER_VIDEO = 5;
 
-        int ORDER_PHOTO_RES = 5;
-        int ORDER_AUDIO_RES = 6;
+        //指令的返回结果
+        int ORDER_OFFSET = 1000;
+        int ORDER_PHOTO_RES = ORDER_OFFSET + ORDER_PHOTO;
+        int ORDER_AUDIO_RES = ORDER_OFFSET + ORDER_AUDIO;
+        int ORDER_VIDEO_RES = ORDER_OFFSET + ORDER_VIDEO;
 
         void socketNotify(int state, Object obj);
     }

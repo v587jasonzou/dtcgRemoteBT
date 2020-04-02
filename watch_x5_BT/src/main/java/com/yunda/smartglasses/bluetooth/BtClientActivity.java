@@ -68,7 +68,8 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
     protected void onDestroy() {
         super.onDestroy();
         ap.onDestroy();
-
+        //取消扫描
+        mBtDevAdapter.cancelDiscovery();
         unregisterReceiver(mBtReceiver);
         mClient.unListener();
         mClient.close();
@@ -120,8 +121,8 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
     }
 
     // 重新扫描
-    public void reScan(View view) {
-        mBtDevAdapter.reScan();
+    public void startDiscovery(View view) {
+        mBtDevAdapter.startDiscovery();
     }
 
     public void sendMsg(View view) {
@@ -130,19 +131,7 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
             if (TextUtils.isEmpty(msg))
                 APP.toast("消息不能空", 0);
             else {
-                try {
-                    //数字
-                    if (Integer.parseInt(msg) == BtBase.FLAG_ORDER_PHOTO) {
-                        mClient.sendOrder(BtBase.FLAG_ORDER_PHOTO);
-                    } else if (Integer.parseInt(msg) == BtBase.FLAG_ORDER_AUDIO) {
-                        mClient.sendOrder(BtBase.FLAG_ORDER_AUDIO);
-                    } else {
-                        mClient.sendMsg(msg);
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    mClient.sendMsg(msg);
-                }
+                mClient.sendMsg(msg);
             }
         } else
             APP.toast("没有连接", 0);
@@ -215,5 +204,17 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
                 mClient.sendFile(filePath);
         } else
             APP.toast("没有连接", 0);
+    }
+
+    public void reqTakePhoto(View view) {
+        mClient.sendOrder(BtBase.FLAG_ORDER_PHOTO);
+    }
+
+    public void reqTakeAudio(View view) {
+        mClient.sendOrder(BtBase.FLAG_ORDER_AUDIO);
+    }
+
+    public void reqTakeVideo(View view) {
+        mClient.sendOrder(BtBase.FLAG_ORDER_VIDEO);
     }
 }

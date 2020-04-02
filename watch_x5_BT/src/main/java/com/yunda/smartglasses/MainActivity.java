@@ -14,6 +14,8 @@ import com.yunda.smartglasses.bluetooth.BtServerActivity;
 
 
 public class MainActivity extends FragmentActivity {
+    public static final String[] REQ_PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +45,8 @@ public class MainActivity extends FragmentActivity {
 
 //        // Android 6.0动态请求权限
 //        RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
-//        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+//        rxPermissions.request(REQ_PERMISSIONS)
+//                     .doOnError(throwable -> throwable.printStackTrace())
 //                     .subscribe(granted -> {
 //                         if (granted) {
 //                             boolean isServer=true;
@@ -65,7 +68,8 @@ public class MainActivity extends FragmentActivity {
     public void btClient(View view) {
         // Android 6.0动态请求权限
         RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+        rxPermissions.request(REQ_PERMISSIONS)
+                     .doOnError(throwable -> throwable.printStackTrace())
                      .subscribe(granted -> {
                          if (granted) {
                              startActivity(new Intent(this, BtClientActivity.class));
@@ -78,7 +82,8 @@ public class MainActivity extends FragmentActivity {
     public void btServer(View view) {
         // Android 6.0动态请求权限
         RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+        rxPermissions.request(REQ_PERMISSIONS)
+                     .doOnError(throwable -> throwable.printStackTrace())
                      .subscribe(granted -> {
                          if (granted) {
                              startActivity(new Intent(this, BtServerActivity.class));

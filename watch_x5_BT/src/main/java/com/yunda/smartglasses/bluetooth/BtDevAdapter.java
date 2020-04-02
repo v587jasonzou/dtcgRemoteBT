@@ -65,13 +65,18 @@ public class BtDevAdapter extends RecyclerView.Adapter<BtDevAdapter.VH> {
         notifyDataSetChanged();
     }
 
-    public void reScan() {
+    public void startDiscovery() {
         mDevices.clear();
         addBound();
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
         if (!bt.isDiscovering())
             bt.startDiscovery();
         notifyDataSetChanged();
+    }
+
+    public void cancelDiscovery() {
+        BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+        bt.cancelDiscovery();
     }
 
     class VH extends RecyclerView.ViewHolder implements View.OnClickListener {

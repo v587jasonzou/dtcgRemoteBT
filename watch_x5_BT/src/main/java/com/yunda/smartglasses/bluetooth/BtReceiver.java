@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
+
 /**
- * 蓝牙广播-监听各种蓝牙状态
+ * 蓝牙广播-监听各种蓝牙状态(异步任务的一种处理方式)
  */
 public class BtReceiver extends BroadcastReceiver {
     private static final String TAG = BtReceiver.class.getSimpleName();
@@ -51,8 +53,10 @@ public class BtReceiver extends BroadcastReceiver {
                 Log.i(TAG, "STATE: " + state);
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_STARTED://蓝牙开始搜索
+                ToastUtils.showShort("蓝牙开始搜索");
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED://蓝牙搜索结束
+                ToastUtils.showShort("蓝牙搜索结束");
                 break;
 
             case BluetoothDevice.ACTION_FOUND://蓝牙发现新设备(未配对的设备)

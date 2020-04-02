@@ -35,7 +35,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(path: ':imagepicker')
+//    implementation project(path: ':imagepicker')
     implementation project(path: ':utilcode')
 
     //support
@@ -75,7 +75,7 @@ dependencies {
     //X5设备
     implementation 'com.madgaze.smartglass:development-kit:x5-0.9.2'
 
-    implementation 'cn.geek.anthony:cameralibrary:1.0.1'
+//    implementation 'cn.geek.anthony:cameralibrary:1.0.1'
 
     implementation rootProject.ext.dependencies["glide"]
 }

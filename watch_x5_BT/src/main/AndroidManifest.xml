@@ -3,16 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yunda.smartglasses">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--建立蓝牙连接和传输权限-->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!--扫描蓝牙设备或修改蓝牙设置权限-->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <!--Android 6.0及后续版本扫描蓝牙,需要定位权限(进入GPS设置,可以看到蓝牙定位)-->
+    <!--Android 9（API 级别 28）或更低版本 扫描蓝牙,需要定位权限(进入GPS设置,可以看到蓝牙定位)-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--Android 10-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+
+    <!--录像-->
+    <!--相机-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-feature android:name="android.hardware.camera" />
 
     <!-- required = true 表示手机必须支持BLE，否则无法安装运行-->
@@ -50,6 +56,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name=".camera.CameraActivity" />
+        <activity android:name=".camcorder.CamcorderActivity" />
 
     </application>
 
