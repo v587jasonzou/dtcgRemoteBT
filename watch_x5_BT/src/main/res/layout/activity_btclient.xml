@@ -1,37 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:alwaysDrawnWithCache="false"
+    tools:context=".bluetooth.BtClientActivity"
     android:layout_height="match_parent">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="2dp">
-
-        <Button
-            android:id="@+id/button2"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:onClick="startDiscovery"
-            android:text="@string/reScan" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="2dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_bt"
-            android:layout_width="match_parent"
-            android:layout_height="186dp"
-            android:background="@drawable/stroke"
-            android:padding="2dp" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:onClick="startDiscovery"
+                android:text="@string/reScan" />
 
-        <TextView
-            android:id="@+id/tv_tips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_bt"
+                android:layout_width="match_parent"
+                android:layout_height="186dp"
+                android:background="@drawable/stroke"
+                android:padding="2dp" />
 
-        <include layout="@layout/layout_send" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/llClient"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center">
+
+                <cn.jzvd.JzvdStd
+                    android:id="@+id/lcoal_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+                <Button
+                    android:id="@+id/btnAudioPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnAudioPlay"
+                    android:layout_gravity="bottom|end"
+                    android:text="播放音频" />
+
+                <ImageView
+                    android:onClick="ivSmallImgPrew"
+                    android:id="@+id/ivImgPreview"
+                    android:layout_width="100dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_height="100dp" />
+            </FrameLayout>
+            <include layout="@layout/layout_send" />
+            <TextView
+                android:id="@+id/tv_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOG:"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+    </ScrollView>
+    <!--大图查看-->
     <ImageView
         android:id="@+id/ivLargeImgPrew"
         android:onClick="ivLargeImgPrew"

@@ -54,10 +54,13 @@ public class BtBase {
             isRead = true;
             while (isRead) { //死循环读取
                 switch (in.readInt()) {
+                    //消息类型
                     case FLAG_MSG: //读取短消息
                         String msg = in.readUTF();
                         notifyUI(Listener.MSG, "接收短消息：" + msg);
                         break;
+
+                    //指令类型
                     case FLAG_ORDER_PHOTO: //被请求拍照
                         notifyUI(Listener.ORDER_PHOTO,null);
                         break;
@@ -67,6 +70,8 @@ public class BtBase {
                     case FLAG_ORDER_VIDEO: //被请求录像
                         notifyUI(Listener.ORDER_VIDEO, null);
                         break;
+
+                    //  文件类型
                     case FLAG_FILE: //读取文件
                         Mp3RecorderManager.mkdirs(FILE_PATH);
                         String fileName = in.readUTF(); //文件名
@@ -90,8 +95,9 @@ public class BtBase {
                            notifyUI(Listener.ORDER_AUDIO_RES,FILE_PATH + fileName);
                         }else if (RegexUtils.isImage(fileName)){
                             notifyUI(Listener.ORDER_PHOTO_RES, FILE_PATH + fileName);
+                        }else if (RegexUtils.isVideo(fileName)){
+                            notifyUI(Listener.ORDER_VIDEO_RES, FILE_PATH + fileName);
                         }
-                        // TODO: 2020/4/2 视频播放组件
                         break;
                 }
             }

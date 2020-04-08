@@ -48,6 +48,8 @@
         <activity
             android:name="com.yunda.smartglasses.bluetooth.BtClientActivity"
             android:label="@string/bt_client"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity

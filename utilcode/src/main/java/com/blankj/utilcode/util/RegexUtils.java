@@ -305,4 +305,12 @@ public final class RegexUtils {
         String path = filePath.toLowerCase();
         return path.endsWith(".jpeg") || path.endsWith(".jpg") || path.endsWith(".bmp") || path.endsWith(".gif") || path.endsWith(".png");
     }
+
+    public static boolean isVideo(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return false;
+        }
+        String path = filePath.toLowerCase();
+        return path.endsWith(".mp4") || path.endsWith(".3gp");
+    }
 }

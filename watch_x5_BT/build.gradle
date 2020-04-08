@@ -13,6 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+        multiDexEnabled true
     }
 
 //    //X5 - 手持机
@@ -72,8 +73,15 @@ dependencies {
     //Android MP3录制
     implementation 'com.github.chezi008:AndroidMp3Recorder:v1.0.4'
 
+    // 视频播放器 [https://github.com/CarGuo/GSYVideoPlayer]
+    implementation 'com.shuyu:GSYVideoPlayer:6.0.3'
+    //视频播放器 [https://github.com/Jzvd/JiaoZiVideoPlayer]
+    implementation 'cn.jzvd:jiaozivideoplayer:7.2.3'
+
     //X5设备
     implementation 'com.madgaze.smartglass:development-kit:x5-0.9.2'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
 //    implementation 'cn.geek.anthony:cameralibrary:1.0.1'
 

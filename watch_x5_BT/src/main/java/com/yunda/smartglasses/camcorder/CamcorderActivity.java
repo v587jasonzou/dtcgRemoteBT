@@ -261,6 +261,10 @@ public class CamcorderActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+            /**
+             * 在调用{@linkplain Camera#open(int)}之前，确保相机未被占用
+             */
+            releaseCamera();
             // initialize video camera
             final int rotation = CamcorderActivity.this.getWindowManager().getDefaultDisplay()
                                                        .getRotation();

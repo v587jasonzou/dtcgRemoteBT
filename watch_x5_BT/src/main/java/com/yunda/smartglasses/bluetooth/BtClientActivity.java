@@ -2,6 +2,7 @@ package com.yunda.smartglasses.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,29 +14,36 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.FileUtils;
 import com.bumptech.glide.Glide;
+import com.yunda.smartglasses.APP;
 import com.yunda.smartglasses.R;
 import com.yunda.smartglasses.audio.AudioPlayer;
-import com.yunda.smartglasses.APP;
+import com.yunda.smartglasses.videoplayer.VideoUtils;
 
 import java.io.File;
+
+import cn.jzvd.JZUtils;
+import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdStd;
 
 public class BtClientActivity extends FragmentActivity implements BtBase.Listener, BtReceiver.Listener, BtDevAdapter.Listener {
     private final BtDevAdapter mBtDevAdapter = new BtDevAdapter(this);
     private final BtClient mClient = new BtClient(this);
     private TextView mTips;
     private EditText mInputMsg;
-    private EditText mInputFile;
     private TextView mLogs;
 
     //播放收到的图片或者音频信息
     private Button btnAudioPlay;
     private ImageView ivImgPreview;
     private ImageView ivLargeImgPrew;
-
+    //蓝牙使用的广播接收器
     private BtReceiver mBtReceiver;
     //录音与播放
     private AudioPlayer ap = new AudioPlayer();
+    //视频播放组件
+    private JzvdStd jzvdLocalPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,24 +52,31 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
         RecyclerView rv = findViewById(R.id.rv_bt);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(mBtDevAdapter);
-        mTips = findViewById(R.id.tv_tips);
-        mInputMsg = findViewById(R.id.input_msg);
-        mInputFile = findViewById(R.id.input_file);
-        mLogs = findViewById(R.id.tv_log);
-        btnAudioPlay = findViewById(R.id.btnAudioPlay);
-        ivImgPreview = findViewById(R.id.ivImgPreview);
-        ivLargeImgPrew = findViewById(R.id.ivLargeImgPrew);
-        mLogs = findViewById(R.id.tv_log);
+        mTips = findViewById(R.id.tv_tips);//蓝牙状态提示
+        mInputMsg = findViewById(R.id.input_msg);//输入消息
+        mLogs = findViewById(R.id.tv_log);//日志
+        btnAudioPlay = findViewById(R.id.btnAudioPlay);//音频播放
+        ivImgPreview = findViewById(R.id.ivImgPreview);//拍照查看
+        ivLargeImgPrew = findViewById(R.id.ivLargeImgPrew);//大图查看
+        jzvdLocalPath = findViewById(R.id.lcoal_path);//本地视频播放
 
         //客户端展示图片与音频的查看
         findViewById(R.id.llClient).setVisibility(View.VISIBLE);
-        findViewById(R.id.btnStopAudioRecording).setVisibility(View.GONE);
         btnAudioPlay.setVisibility(View.GONE);
 
         mBtReceiver = new BtReceiver(this, this);//注册蓝牙广播
 
-        //检测其他
+        //蓝牙-检测其他
         BluetoothAdapter.getDefaultAdapter().startDiscovery();
+
+        /*初始化视频播放组件*/
+        String filePath = "/sdcard/bluetooth/VID_20200408_153840.mp4";
+        if (FileUtils.isFileExists(filePath)) {
+            jzvdLocalPath.setUp(filePath, FileUtils.getFileName(filePath));
+            Bitmap bm = VideoUtils.getVideoThumb(filePath);
+            jzvdLocalPath.posterImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            jzvdLocalPath.posterImageView.setImageBitmap(bm);
+        }
     }
 
     @Override
@@ -90,7 +105,10 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
         try {
             if (!ap.isPlaying()) {
                 String filepath = (String) view.getTag();
-                ap.play(new File(filepath), null);
+                ap.play(new File(filepath), mp -> {
+                    //播放完成 - 重置状态
+                    btnAudioPlay.setText("播放音频");
+                });
                 btnAudioPlay.setText("播放中(点击停止)");
             } else {
                 ap.stop();
@@ -108,7 +126,6 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
         ivLargeImgPrew.setVisibility(View.VISIBLE);
         String filePath = (String) ivImgPreview.getTag(R.id.ivImgPreview);
         Glide.with(this).load(filePath).into(ivLargeImgPrew);
-//        ivLargeImgPrew.setImageBitmap(ImageUtils.getBitmap(filePath));
     }
 
     public void ivLargeImgPrew(View view) {
@@ -137,17 +154,19 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
             APP.toast("没有连接", 0);
     }
 
-    public void sendFile(View view) {
-        String filePath = mInputFile.getText().toString();
-        sendFile(filePath);
-//        if (mClient.isConnected(null)) {
-//            String filePath = mInputFile.getText().toString();
-//            if (TextUtils.isEmpty(filePath) || !new File(filePath).isFile())
-//                APP.toast("文件无效", 0);
-//            else
-//                mClient.sendFile(filePath);
-//        } else
-//            APP.toast("没有连接", 0);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZUtils.clearSavedProgress(this, null);
+        Jzvd.releaseAllVideos();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (Jzvd.backPress()) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -166,44 +185,58 @@ public class BtClientActivity extends FragmentActivity implements BtBase.Listene
                 msg = "连接断开";
                 mTips.setText(msg);
                 break;
-            case BtBase.Listener.MSG:
+            case BtBase.Listener.MSG://消息
                 msg = String.format("\n%s", obj);
                 mLogs.append(msg);
                 break;
-            case BtBase.Listener.ORDER_PHOTO_RES:
+            case BtBase.Listener.ORDER_PHOTO_RES://拍照返回
                 msg = String.format("\n%s", "请查看左侧图片");
                 mLogs.append(msg);
 
                 filePath = (String) obj;
-                ivImgPreview.setVisibility(View.VISIBLE);
-                btnAudioPlay.setVisibility(View.GONE);
-
                 Glide.with(this).load(filePath).into(ivImgPreview);
                 ivImgPreview.setTag(R.id.ivImgPreview,filePath);
-//                ivImgPreview.setImageBitmap(ImageUtils.getBitmap(filePath));
+
+                showOne(ivImgPreview);
                 break;
-            case BtBase.Listener.ORDER_AUDIO_RES:
+            case BtBase.Listener.ORDER_AUDIO_RES://录音返回
                 msg = String.format("\n%s", "请查看左侧音频");
                 mLogs.append(msg);
 
                 filePath = (String) obj;
-                ivImgPreview.setVisibility(View.GONE);
-                btnAudioPlay.setVisibility(View.VISIBLE);
                 btnAudioPlay.setTag(filePath);
+                showOne(btnAudioPlay);
+                break;
+            case BtBase.Listener.ORDER_VIDEO_RES://录像返回
+                msg = String.format("\n%s", "请查看左侧视频封面");
+                mLogs.append(msg);
+
+                filePath = (String) obj;
+                ivImgPreview.setVisibility(View.GONE);
+                btnAudioPlay.setVisibility(View.GONE);
+
+                //视频播放组件，视频缩略图
+                jzvdLocalPath.setUp(filePath, FileUtils.getFileName(filePath));
+                Bitmap bm = VideoUtils.getVideoThumb(filePath);
+                jzvdLocalPath.posterImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                jzvdLocalPath.posterImageView.setImageBitmap(bm);
+
+                showOne(jzvdLocalPath);
                 break;
         }
         APP.toast(msg, 0);
     }
 
+    /**组件显示控制
+     * @param view
+     */
+    private void showOne(View view) {
+        ivImgPreview.setVisibility(View.GONE);
+        ivLargeImgPrew.setVisibility(View.GONE);
+        btnAudioPlay.setVisibility(View.GONE);
+        jzvdLocalPath.setVisibility(View.GONE);
 
-    private void sendFile(String filePath) {
-        if (mClient.isConnected(null)) {
-            if (TextUtils.isEmpty(filePath) || !new File(filePath).isFile())
-                APP.toast("文件无效", 0);
-            else
-                mClient.sendFile(filePath);
-        } else
-            APP.toast("没有连接", 0);
+        view.setVisibility(View.VISIBLE);
     }
 
     public void reqTakePhoto(View view) {
