@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -33,7 +34,7 @@ import java.util.Locale;
  * <li>修改日期：
  * <li>修改内容：
  */
-public class CameraActivity extends Activity implements SurfaceHolder.Callback {
+public class CameraActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     private Camera mCamera;
     private SurfaceView surfaceView;
     private int mCameraId = CameraHelper.getCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);

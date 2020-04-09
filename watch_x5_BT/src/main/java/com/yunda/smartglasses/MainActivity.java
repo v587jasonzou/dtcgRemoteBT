@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -13,7 +13,7 @@ import com.yunda.smartglasses.bluetooth.BtClientActivity;
 import com.yunda.smartglasses.bluetooth.BtServerActivity;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
     public static final String[] REQ_PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
 
     @Override

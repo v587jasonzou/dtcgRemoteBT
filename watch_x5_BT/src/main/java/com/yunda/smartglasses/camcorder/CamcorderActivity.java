@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.blankj.utilcode.util.ScreenUtils;
+import com.orhanobut.logger.Logger;
 import com.yunda.smartglasses.R;
 import com.yunda.smartglasses.camera.CameraHelper;
 
@@ -67,10 +68,12 @@ public class CamcorderActivity extends AppCompatActivity {
 
 //        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 200);
         try {
+            //配置相机预览
             configCameraPreview(cameraId, getWindowManager().getDefaultDisplay().getRotation());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //监听SurfaceTexture创建情况，当创建成功，需要重新设置预览Surface
         mPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -216,6 +219,9 @@ public class CamcorderActivity extends AppCompatActivity {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         // Use the same size for recording profile.
+        /**
+         *视频帧尺寸设置{@linkplain optimalSize}不合理，可能导致{@linkplain MediaRecorder#start()}崩溃(报错信息：MediaRecorder: start failed: -19)
+         */
         CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
         profile.videoFrameWidth = optimalSize.width;
         profile.videoFrameHeight = optimalSize.height;
@@ -268,12 +274,21 @@ public class CamcorderActivity extends AppCompatActivity {
             // initialize video camera
             final int rotation = CamcorderActivity.this.getWindowManager().getDefaultDisplay()
                                                        .getRotation();
+            //如果报错：[start failed: -19],考虑摄像机配置了设备不支持的属性
             if (prepareVideoRecorder(rotation)) {
                 // Camera is available and unlocked, MediaRecorder is prepared,
                 // now you can start recording
-                mMediaRecorder.start();
+                try {
+                    mMediaRecorder.start();
+                    isRecording = true;
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
 
-                isRecording = true;
+                    // prepare didn't work, release the camera
+                    releaseMediaRecorder();
+                    return false;
+                }
+
             } else {
                 // prepare didn't work, release the camera
                 releaseMediaRecorder();
@@ -292,6 +307,12 @@ public class CamcorderActivity extends AppCompatActivity {
         }
     }
 
+    /**配置相机预览
+     * @param cameraId
+     * @param windowRotation
+     * @return
+     * @throws IOException
+     */
     public Camera.Size configCameraPreview(int cameraId, int windowRotation) throws IOException {
         //// region (configure_preview)
 //        mCamera = CameraHelper.getDefaultCameraInstance();
@@ -301,15 +322,17 @@ public class CamcorderActivity extends AppCompatActivity {
         // camera. Query camera to find all the sizes and choose the optimal size given the
         // dimensions of our preview surface.
         Camera.Parameters parameters = mCamera.getParameters();
-        int minHeight = ScreenUtils.getScreenWidth();
+        int minScreenSize = Math.min(ScreenUtils.getScreenWidth(),ScreenUtils.getScreenHeight());
         List<Camera.Size> mSupportedPreviewSizes = parameters.getSupportedPreviewSizes();
         List<Camera.Size> mSupportedVideoSizes = parameters.getSupportedVideoSizes();
         //NOTE:尺寸的设置影响预览成像效果(模糊)
         //这里第三个参数为最小尺寸 getPropPreviewSize方法会对从最小尺寸开始升序排列 取出所有支持尺寸的最小尺寸
         //注意：相机默认为0度方向(横向，纵向为90度)，这里匹配时，VIEW大小以横向传入(宽传入高)
-//        Camera.Size optimalSize = CamcorderHelper.getOptimalVideoSize(mSupportedVideoSizes,
+        Camera.Size optimalSize;
+//        optimalSize = CamcorderHelper.getOptimalVideoSize(mSupportedVideoSizes,
 //                mSupportedPreviewSizes, mPreview.getHeight(), mPreview.getWidth());
-        Camera.Size optimalSize = CameraHelper.getPropSizeForHeight(mSupportedPreviewSizes, minHeight);
+        optimalSize = CameraHelper.getPropSizeForHeight(mSupportedPreviewSizes, minScreenSize);
+        Logger.d(String.format("Camera.Size=%d*%d", optimalSize.width, optimalSize.height));
 
         List<String> supFm = parameters.getSupportedFocusModes();
         if (supFm.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
@@ -319,13 +342,13 @@ public class CamcorderActivity extends AppCompatActivity {
         }
 
         // likewise for the camera object itself.
-        //【note:设置相机预览尺寸，输出到预览View的图像数据，不一致会导致拉伸等问题】
+        //【note:设置相机预览尺寸，输出到预览View的图像数据，不一致会导致拉伸等问题】,【预览尺寸设置过大，可能导致预览画面卡顿】
         parameters.setPreviewSize(optimalSize.width, optimalSize.height);
         mCamera.setParameters(parameters);
         //摄像头方向，默认为横向：0度
         //NOTE:前置摄像头，会执行水平镜像翻转
         mCamera.setDisplayOrientation(CamcorderHelper.getCameraDisplayOrientation(cameraId, windowRotation));
-        mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
+        mCamera.setPreviewTexture(mPreview.getSurfaceTexture());//{@linkplain mPreview.getSurfaceTexture()}可能为空，需要到监听器设置
 //        try {
 //            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
 //            // with {@link SurfaceView}

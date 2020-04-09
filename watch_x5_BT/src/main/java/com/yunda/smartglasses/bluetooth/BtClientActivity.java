@@ -4,10 +4,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +28,7 @@ import cn.jzvd.JZUtils;
 import cn.jzvd.Jzvd;
 import cn.jzvd.JzvdStd;
 
-public class BtClientActivity extends FragmentActivity implements BtBase.Listener, BtReceiver.Listener, BtDevAdapter.Listener {
+public class BtClientActivity extends AppCompatActivity implements BtBase.Listener, BtReceiver.Listener, BtDevAdapter.Listener {
     private final BtDevAdapter mBtDevAdapter = new BtDevAdapter(this);
     private final BtClient mClient = new BtClient(this);
     private TextView mTips;

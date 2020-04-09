@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,7 +27,7 @@ import com.yunda.smartglasses.camera.CameraHelper;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
-public class BtServerActivity extends FragmentActivity implements BtBase.Listener {
+public class BtServerActivity extends AppCompatActivity implements BtBase.Listener {
     private static final int REQ_CODE_DISCOVERABLE = 1;
     private static final int REQ_CODE_TAKE_PHOTO = 2;//拍照
     private static final int REQ_CODE_TAKE_VIDEO = 3;//请求录像
