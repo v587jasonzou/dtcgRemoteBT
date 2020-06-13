@@ -67,7 +67,11 @@ public class BtClientActivity extends AppCompatActivity implements BtBase.Listen
 
         mBtReceiver = new BtReceiver(this, this);//注册蓝牙广播
 
-        //蓝牙-检测其他
+        /**
+         *  TODO 检测蓝牙设置可用性
+         */
+        //蓝牙-查找其他设备(已经启用-可检测性)
+        //发现进程通常包含约 12 秒钟的查询扫描
         BluetoothAdapter.getDefaultAdapter().startDiscovery();
 
         /*初始化视频播放组件*/

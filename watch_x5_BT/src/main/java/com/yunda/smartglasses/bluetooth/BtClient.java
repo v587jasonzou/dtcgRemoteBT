@@ -21,6 +21,7 @@ public class BtClient extends BtBase {
     public void connect(BluetoothDevice dev) {
         close();
         try {
+            //客户端 - 使用对端蓝牙设备标识，建立到对端的客户端Socket
 //             final BluetoothSocket socket = dev.createRfcommSocketToServiceRecord(SPP_UUID); //加密传输，Android系统强制配对，弹窗显示配对码
             final BluetoothSocket socket = dev.createInsecureRfcommSocketToServiceRecord(SPP_UUID); //明文传输(不安全)，无需配对
             // 开启子线程

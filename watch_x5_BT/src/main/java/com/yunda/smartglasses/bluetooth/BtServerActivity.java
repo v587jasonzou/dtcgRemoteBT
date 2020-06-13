@@ -49,7 +49,7 @@ public class BtServerActivity extends AppCompatActivity implements BtBase.Listen
         //服务端隐藏图片与音频的查看
         mServer = new BtServer(this);
 
-        //启用蓝牙可检测性
+        //启用蓝牙可检测性 - 可自动开启蓝牙装置
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);//永久可检测
         startActivityForResult(discoverableIntent,REQ_CODE_DISCOVERABLE);

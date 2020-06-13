@@ -46,6 +46,11 @@ public class BtBase {
     void loopRead(BluetoothSocket socket) {
         mSocket = socket;
         try {
+            //如果 accept() 返回 BluetoothSocket，则表示已连接套接字。因此，您不应像从客户端那样调用 connect()。
+            /**
+             *  您应始终调用 cancelDiscovery()，以确保设备在您调用 connect() 之前不会执行设备发现。
+             *  如果正在执行发现操作，则会大幅降低连接尝试的速度，并增加连接失败的可能性。
+             */
             if (!mSocket.isConnected())
                 mSocket.connect();
             notifyUI(Listener.CONNECTED, mSocket.getRemoteDevice());
